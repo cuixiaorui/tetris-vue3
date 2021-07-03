@@ -1,11 +1,9 @@
-import { config, speedUp, resetSpeed } from "./config";
+import { config } from "./config";
 import { createBox } from "./Box";
 import { collisionDetection } from "./collisionDetection";
 
 const boxs = [];
-let activeBox = null;
-
-keyboard();
+export let activeBox = null;
 
 export function initMap(map) {
   // init map
@@ -27,7 +25,7 @@ export function moveDown(map) {
   }
 
   // 下面是不是有其他的 box
-  if (collisionDetection(activeBox, map, 1, "bottom", 0)) {
+  if (collisionDetection({ box: activeBox, map, offsetY: 1, type: "bottom" })) {
     nextBox();
     return;
   }
@@ -46,7 +44,7 @@ export function render(map) {
   _render(map);
 }
 
-function nextBox() {
+export function nextBox() {
   addBox();
 }
 
@@ -67,38 +65,4 @@ function _render(map) {
 
 function reset(map) {
   initMap(map);
-}
-
-function keyboard() {
-  window.addEventListener("keyup", handleKeyup);
-  window.addEventListener("keydown", handleKeydown);
-}
-function handleKeyup(e) {
-  if (e.code === "ArrowDown") {
-    resetSpeed();
-  }
-}
-
-function handleKeydown(e) {
-  if (!activeBox) return;
-  switch (e.code) {
-    case "ArrowLeft":
-      if (activeBox.x <= 0) return;
-      // TODO 这里的 map 应该如何获取到呢？
-      // 需要重新的组织一下代码了
-      // 这里的逻辑可以上移到 game/index.js 内
-      //       if (collisionDetection(activeBox, _map, 0, "left", 1)) {
-      //         nextBox();
-      //         return;
-      //       }
-      activeBox.x--;
-      break;
-    case "ArrowRight":
-      if (activeBox.x + activeBox.width >= config.game.col) return;
-      activeBox.x++;
-      break;
-    case "ArrowDown":
-      speedUp();
-      break;
-  }
 }

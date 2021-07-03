@@ -121,6 +121,22 @@ export class Box {
     }
     return result;
   }
+
+  getRightPoints() {
+    let result = [];
+    for (let i = 0; i < this._height; i++) {
+      for (let j = this._width - 1; j >= 0; j--) {
+        if (this.shape[i][j]) {
+          result.push({
+            x: j,
+            y: i,
+          });
+          break;
+        }
+      }
+    }
+    return result;
+  }
 }
 
 export function createBox() {

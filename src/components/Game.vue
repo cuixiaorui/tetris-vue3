@@ -1,6 +1,6 @@
 <template>
   <div class="game">
-    <div class="row" v-for="(row, rIndex) in gameRow" :key="rIndex">
+    <div class="row"  v-for="(row, rIndex) in gameRow" :key="rIndex">
       <div v-for="(col, cIndex) in gameCol" :key="cIndex">
         <Block :type="map[rIndex][cIndex]"></Block>
       </div>

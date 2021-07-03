@@ -1,4 +1,10 @@
-export function collisionDetection(box, map, offsetY, type,offsetX) {
+export function collisionDetection({
+  box,
+  map,
+  type,
+  offsetX = 0,
+  offsetY = 0,
+}) {
   // 这个是最下面一行的碰撞检测
   // TODO 还需要左侧和右侧
   // 或者，获取 box 的最下面的几个节点
@@ -11,6 +17,7 @@ export function collisionDetection(box, map, offsetY, type,offsetX) {
   const fnMap = {
     bottom: box.getBottomPoints.bind(box),
     left: box.getLeftPoints.bind(box),
+    right: box.getRightPoints.bind(box),
   };
   const getPointsFn = fnMap[type];
 
