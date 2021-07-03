@@ -10,6 +10,11 @@ export class Box {
       [0, 2, 0],
     ];
 
+    // this.shape = [
+    //   [2, 2],
+    //   [2, 2],
+    // ];
+
     this.calculateWidth();
     this.calculateHeight();
   }

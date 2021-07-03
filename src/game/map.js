@@ -1,6 +1,7 @@
 import { config } from "./config";
 import { createBox } from "./Box";
 import { collisionDetection } from "./collisionDetection";
+import { lineElimination } from "./lineElimination";
 
 const boxs = [];
 export let activeBox = null;
@@ -20,13 +21,13 @@ export function moveDown(map) {
   // 到底有2种情况
   // 1. 真的到底
   if (activeBox.y + activeBox.height >= config.game.row) {
-    nextBox();
+    nextBox(map);
     return;
   }
 
   // 下面是不是有其他的 box
   if (collisionDetection({ box: activeBox, map, offsetY: 1, type: "bottom" })) {
-    nextBox();
+    nextBox(map);
     return;
   }
   activeBox.y++;
@@ -39,30 +40,79 @@ export function addBox() {
   boxs.push(box);
 }
 
+function mergeToMap(map) {
+  const shape = activeBox.getShape();
+
+  for (let i = 0; i < shape.length; i++) {
+    for (let j = 0; j < shape[i].length; j++) {
+      // 如果当前的这个位置已经被占用了，那么后来的就不可以被赋值
+      if (shape[i][j]) {
+        map[i + activeBox.y][j + activeBox.x] = -1;
+      }
+    }
+  }
+}
+
 export function render(map) {
   reset(map);
   _render(map);
 }
 
-export function nextBox() {
+function nextBox(map) {
+  mergeToMap(map);
+  lineElimination(map);
   addBox();
 }
 
 function _render(map) {
-  boxs.forEach((box) => {
-    const shape = box.getShape();
+  // 每次只重新 render  active 的这个 box
+  // 那些已经不动弹的 box 就不需要刷新了
 
-    for (let i = 0; i < shape.length; i++) {
-      for (let j = 0; j < shape[i].length; j++) {
-        // 如果当前的这个位置已经被占用了，那么后来的就不可以被赋值
-        if (map[i + box.y][j + box.x] === 0) {
-          map[i + box.y][j + box.x] = shape[i][j];
-        }
+  // boxs.forEach((box) => {
+  //   const shape = box.getShape();
+
+  //   for (let i = 0; i < shape.length; i++) {
+  //     for (let j = 0; j < shape[i].length; j++) {
+  //       // 如果当前的这个位置已经被占用了，那么后来的就不可以被赋值
+  //       if (map[i + box.y][j + box.x] === 0) {
+  //         map[i + box.y][j + box.x] = shape[i][j];
+  //       }
+  //     }
+  //   }
+  // });
+
+  const shape = activeBox.getShape();
+
+  for (let i = 0; i < shape.length; i++) {
+    for (let j = 0; j < shape[i].length; j++) {
+      // 如果当前的这个位置已经被占用了，那么后来的就不可以被赋值
+      if (map[i + activeBox.y][j + activeBox.x] === 0) {
+        map[i + activeBox.y][j + activeBox.x] = shape[i][j];
       }
     }
-  });
+  }
 }
 
 function reset(map) {
-  initMap(map);
+  // initMap(map);
+  // 只刷新 active 的位置
+  // 也就是只清除 active 的 shape 的点
+  // const shape = activeBox.getShape();
+
+  // for (let i = 0; i < shape.length; i++) {
+  //   for (let j = 0; j < shape[i].length; j++) {
+  //     map[i + activeBox.y ][j + activeBox.x] = 0;
+  //   }
+  // }
+
+  const row = map.length;
+  const col = map[0].length;
+
+  for (let i = 0; i < row; i++) {
+    for (let j = 0; j < col; j++) {
+      if (map[i][j] !== -1) {
+        map[i][j] = 0;
+      }
+    }
+  }
 }

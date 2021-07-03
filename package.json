@@ -4,9 +4,10 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "test":"jest"
+    "test": "jest"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "vue": "^3.0.5"
   },
   "devDependencies": {
