@@ -1,3 +1,4 @@
+
 import { lineElimination, canEliminationLines } from "./lineElimination.js";
 describe("Line elimination", () => {
   it("消除第二行, 上面的行需要掉落下来", () => {

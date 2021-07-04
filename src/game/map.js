@@ -3,7 +3,6 @@ import { createBox } from "./Box";
 import { collisionDetection } from "./collisionDetection";
 import { lineElimination } from "./lineElimination";
 
-const boxs = [];
 export let activeBox = null;
 
 export function initMap(map) {
@@ -37,7 +36,6 @@ export function moveDown(map) {
 export function addBox() {
   const box = createBox();
   activeBox = box;
-  boxs.push(box);
 }
 
 function mergeToMap(map) {
@@ -67,20 +65,6 @@ function nextBox(map) {
 function _render(map) {
   // 每次只重新 render  active 的这个 box
   // 那些已经不动弹的 box 就不需要刷新了
-
-  // boxs.forEach((box) => {
-  //   const shape = box.getShape();
-
-  //   for (let i = 0; i < shape.length; i++) {
-  //     for (let j = 0; j < shape[i].length; j++) {
-  //       // 如果当前的这个位置已经被占用了，那么后来的就不可以被赋值
-  //       if (map[i + box.y][j + box.x] === 0) {
-  //         map[i + box.y][j + box.x] = shape[i][j];
-  //       }
-  //     }
-  //   }
-  // });
-
   const shape = activeBox.getShape();
 
   for (let i = 0; i < shape.length; i++) {
@@ -94,17 +78,6 @@ function _render(map) {
 }
 
 function reset(map) {
-  // initMap(map);
-  // 只刷新 active 的位置
-  // 也就是只清除 active 的 shape 的点
-  // const shape = activeBox.getShape();
-
-  // for (let i = 0; i < shape.length; i++) {
-  //   for (let j = 0; j < shape[i].length; j++) {
-  //     map[i + activeBox.y ][j + activeBox.x] = 0;
-  //   }
-  // }
-
   const row = map.length;
   const col = map[0].length;
 

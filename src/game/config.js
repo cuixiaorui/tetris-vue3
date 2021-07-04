@@ -1,6 +1,6 @@
 export const config = {
   game: {
-    row: 20,
+    row: 15,
     col: 10,
     speed: 1000,
     speedFactor: 0.6,

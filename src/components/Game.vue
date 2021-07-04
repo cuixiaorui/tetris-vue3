@@ -23,6 +23,8 @@ startGame(map);
 
 <style scoped>
 .row {
+  /* background: #a0ad8a; */
   display: flex;
+
 }
 </style>
