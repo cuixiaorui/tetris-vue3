@@ -2,9 +2,11 @@ export function lineElimination(map) {
   // 1. 先把所有列都为 1 的行找出来 -》 得到一个索引数组
   // 2. 基于行的索引把
   const lines = canEliminationLines(map);
+  console.log(lines);
+
 
   // 需要把上面的值都落下来
-  lines.forEach((line) => {
+  lines.reverse().forEach((line) => {
     map.splice(line, 1);
     const col = map[line].length;
     // TODO 看看有没有更优雅的创建数组的方式
