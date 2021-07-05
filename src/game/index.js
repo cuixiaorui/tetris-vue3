@@ -1,7 +1,7 @@
 export * from "./map.js";
 export * from "./config.js";
 import { config, speedUp, resetSpeed } from "./config";
-import { addBox, initMap, moveDown, render, activeBox } from "./map.js";
+import { addBox, initMap, moveDown, render, activeBox, reset } from "./map.js";
 import { add as addTicker } from "./ticker";
 import { collisionDetection } from "./collisionDetection";
 
@@ -14,6 +14,7 @@ export function startGame(map) {
 
   let n = 0;
   const handleTicker = (i) => {
+    reset(map);
     n += i;
     if (n >= config.game.speed) {
       n = 0;
@@ -38,11 +39,15 @@ export function startGame(map) {
     switch (e.code) {
       case "ArrowLeft":
         // 超出边界的话，不可以出去
-        if (activeBox.x <= 0) return;
+        if (activeBox.x <= 0) {
+          console.log("!!!!");
+          return;
+        }
         // 碰撞到其他的 box 的话，那么也不可以在移动了
         if (
           collisionDetection({ box: activeBox, map, type: "left", offsetX: -1 })
         ) {
+          console.log("?????????????");
           return;
         }
 
