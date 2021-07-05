@@ -2,6 +2,7 @@ import { config } from "./config";
 import { createBox } from "./Box";
 import { collisionDetection } from "./collisionDetection";
 import { lineElimination } from "./lineElimination";
+import { randomGenerateShape } from "./generateShape";
 
 export let activeBox = null;
 
@@ -26,7 +27,12 @@ export function moveDown(map) {
 
   // 下面是不是有其他的 box
   if (collisionDetection({ box: activeBox, map, offsetY: 1, type: "bottom" })) {
+    console.log("碰到了");
+    // TODO  需要把 map  deepClone 来进行调试
+    console.log(activeBox);
+    console.log(map);
     nextBox(map);
+    // throw new Error();
     return;
   }
   activeBox.y++;
@@ -34,7 +40,7 @@ export function moveDown(map) {
 
 // 碰撞检测
 export function addBox() {
-  const box = createBox();
+  const box = createBox({ shape: randomGenerateShape() });
   activeBox = box;
 }
 
@@ -52,7 +58,6 @@ function mergeToMap(map) {
 }
 
 export function render(map) {
-  reset(map);
   _render(map);
 }
 
@@ -70,14 +75,15 @@ function _render(map) {
   for (let i = 0; i < shape.length; i++) {
     for (let j = 0; j < shape[i].length; j++) {
       // 如果当前的这个位置已经被占用了，那么后来的就不可以被赋值
-      if (map[i + activeBox.y][j + activeBox.x] === 0) {
+      // 这个 shape 的 val 必须是有值得，才可以赋值给 map
+      if (shape[i][j] && map[i + activeBox.y][j + activeBox.x] === 0) {
         map[i + activeBox.y][j + activeBox.x] = shape[i][j];
       }
     }
   }
 }
 
-function reset(map) {
+export function reset(map) {
   const row = map.length;
   const col = map[0].length;
 

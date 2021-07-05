@@ -1,22 +1,23 @@
+import { config } from "./config";
 export class Box {
   constructor(options = {}) {
     this._x = options.x || 0;
     this._y = options.y || 0;
     this._width = 0;
     this._height = 0;
-    this.shape = [
+    this.shape = options.shape || [
       [2, 0, 0],
       [2, 2, 0],
       [0, 2, 0],
     ];
 
-    // this.shape = [
-    //   [2, 2],
-    //   [2, 2],
-    // ];
-
     this.calculateWidth();
     this.calculateHeight();
+    this.center();
+  }
+
+  center() {
+    this._x = Math.floor((config.game.col - this._width) * 0.5);
   }
 
   calculateHeight() {
@@ -144,9 +145,6 @@ export class Box {
   }
 }
 
-export function createBox() {
-  // TODO x 和 y 需要随机生成
-  // const x =
-  // const y =
-  return new Box({ x: 0, y: 0 });
+export function createBox({ x, y, shape }) {
+  return new Box({ x, y, shape });
 }
