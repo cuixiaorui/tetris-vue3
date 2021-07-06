@@ -3,7 +3,8 @@ export * from "./config.js";
 import { config, speedUp, resetSpeed } from "./config";
 import { addBox, initMap, moveDown, render, activeBox, reset } from "./map.js";
 import { add as addTicker } from "./ticker";
-import { collisionDetection } from "./collisionDetection";
+import { collisionDetection, boundaryDetection } from "./collisionDetection";
+import { rotate } from "./rotate";
 
 export function startGame(map) {
   initMap(map);
@@ -38,23 +39,30 @@ export function startGame(map) {
     if (!activeBox) return;
     switch (e.code) {
       case "ArrowLeft":
-        // 超出边界的话，不可以出去
-        if (activeBox.x <= 0) {
-          console.log("!!!!");
+        if (
+          boundaryDetection({ box: activeBox, map, type: "left", offsetX: -1 })
+        ) {
           return;
         }
-        // 碰撞到其他的 box 的话，那么也不可以在移动了
         if (
-          collisionDetection({ box: activeBox, map, type: "left", offsetX: -1 })
+          collisionDetection({
+            box: activeBox,
+            map,
+            type: "left",
+            offsetX: -1,
+          })
         ) {
-          console.log("?????????????");
           return;
         }
 
         activeBox.x--;
         break;
       case "ArrowRight":
-        if (activeBox.x + activeBox.width >= config.game.col) return;
+        if (
+          boundaryDetection({ box: activeBox, map, type: "right", offsetX: 1 })
+        ) {
+          return;
+        }
 
         if (
           collisionDetection({ box: activeBox, map, type: "right", offsetX: 1 })
@@ -65,6 +73,9 @@ export function startGame(map) {
         break;
       case "ArrowDown":
         speedUp();
+        break;
+      case "Space":
+        activeBox.setShape(rotate(activeBox.getShape()));
         break;
     }
   }

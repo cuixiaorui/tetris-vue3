@@ -11,6 +11,7 @@ test("bottom", () => {
   ];
 
   const box = new Box({ x: 0, y: 1 });
+
   box.setShape([
     [0, 0, 3],
     [0, 3, 3],

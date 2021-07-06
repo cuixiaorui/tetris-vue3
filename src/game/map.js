@@ -1,6 +1,6 @@
 import { config } from "./config";
 import { createBox } from "./Box";
-import { collisionDetection } from "./collisionDetection";
+import { collisionDetection, boundaryDetection } from "./collisionDetection";
 import { lineElimination } from "./lineElimination";
 import { randomGenerateShape } from "./generateShape";
 
@@ -20,7 +20,7 @@ export function initMap(map) {
 export function moveDown(map) {
   // 到底有2种情况
   // 1. 真的到底
-  if (activeBox.y + activeBox.height >= config.game.row) {
+  if (boundaryDetection({ box: activeBox, type: "bottom", offsetY: 1, map })) {
     nextBox(map);
     return;
   }
@@ -41,6 +41,7 @@ export function moveDown(map) {
 // 碰撞检测
 export function addBox() {
   const box = createBox({ shape: randomGenerateShape() });
+  box.center();
   activeBox = box;
 }
 

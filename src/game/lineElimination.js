@@ -2,8 +2,6 @@ export function lineElimination(map) {
   // 1. 先把所有列都为 1 的行找出来 -》 得到一个索引数组
   // 2. 基于行的索引把
   const lines = canEliminationLines(map);
-  console.log(lines);
-
 
   // 需要先删除前面的，在删除后面的，防止数据的移动
   // 所有用得 reverse 来调换一下顺序
