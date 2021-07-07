@@ -56,6 +56,7 @@ const boxsInfo = {
 export function randomGenerateShape() {
   const len = Object.keys(boxsInfo).length - 1;
   const index = Math.ceil(Math.random() * len);
+  // const index = 3;
 
   return boxsInfo[index];
 }

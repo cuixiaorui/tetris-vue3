@@ -1,6 +1,6 @@
 import { config } from "./config";
 import { createBox } from "./Box";
-import { boundaryDetection, hitBottomBox } from "./collisionDetection";
+import { hitBottomBox, hitBottomBoundary } from "./hit";
 import { lineElimination } from "./lineElimination";
 import { randomGenerateShape } from "./generateShape";
 
@@ -20,20 +20,14 @@ export function initMap(map) {
 export function moveDown(map) {
   // 到底有2种情况
   // 1. 真的到底
-  if (boundaryDetection({ box: activeBox, type: "bottom", offsetY: 1, map })) {
-    nextBox(map);
-    return;
-  }
-
-  // 下面是不是有其他的 box
-  if (hitBottomBox(activeBox, map)) {
+  // 2. 下面是不是有其他的 box
+  if (hitBottomBoundary(activeBox, map) || hitBottomBox(activeBox, map)) {
     nextBox(map);
     return;
   }
   activeBox.y++;
 }
 
-// 碰撞检测
 export function addBox() {
   const { shape, rotateStrategy } = randomGenerateShape();
 

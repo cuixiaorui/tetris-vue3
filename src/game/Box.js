@@ -1,4 +1,3 @@
-import { config } from "./config";
 export class Box {
   constructor(options = {}) {
     this._x = options.x || 0;
@@ -21,9 +20,16 @@ export class Box {
   rotate() {
     const rotateFn = this._rotateStrategy[this._rotateIndex];
     this.shape = rotateFn(this.shape);
+    this._rotateIndex = this.nextRotateIndex();
+  }
 
-    this._rotateIndex++;
-    if (this._rotateIndex >= this._rotateStrategy.length) this._rotateIndex = 0;
+  nextRotateIndex() {
+    let index = this._rotateIndex;
+
+    index++;
+    if (index >= this._rotateStrategy.length) index = 0;
+
+    return index;
   }
 
   center() {
@@ -55,57 +61,9 @@ export class Box {
     this.shape = val;
   }
 
-  getBottomPoints() {
-    let result = [];
-    const col = this.shape[0].length;
-    const row = this.shape.length;
-    for (let i = 0; i < col; i++) {
-      for (let j = row - 1; j >= 0; j--) {
-        const point = this.getShape()[j][i];
-        if (point) {
-          result.push({ x: i, y: j });
-          break;
-        }
-      }
-    }
-    return result;
-  }
-
-  getLeftPoints() {
-    let result = [];
-    const col = this.shape[0].length;
-    const row = this.shape.length;
-    for (let i = 0; i < row; i++) {
-      for (let j = 0; j < col; j++) {
-        if (this.shape[i][j]) {
-          result.push({
-            x: j,
-            y: i,
-          });
-          break;
-        }
-      }
-    }
-    return result;
-  }
-
-  getRightPoints() {
-    let result = [];
-    const col = this.shape[0].length;
-    const row = this.shape.length;
-
-    for (let i = 0; i < row; i++) {
-      for (let j = col - 1; j >= 0; j--) {
-        if (this.shape[i][j]) {
-          result.push({
-            x: j,
-            y: i,
-          });
-          break;
-        }
-      }
-    }
-    return result;
+  peerNextRotateShape() {
+    const rotateFn = this._rotateStrategy[this.nextRotateIndex()];
+    return rotateFn(this.shape);
   }
 }
 

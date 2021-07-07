@@ -4,10 +4,13 @@ import { config, speedUp, resetSpeed } from "./config";
 import { addBox, initMap, moveDown, render, activeBox, reset } from "./map.js";
 import { add as addTicker } from "./ticker";
 import {
-  boundaryDetection,
   hitRightBox,
   hitLeftBox,
-} from "./collisionDetection";
+  hitRightBoundary,
+  hitLeftBoundary,
+  checkBoxLegal,
+} from "./hit";
+import { createBox } from "./Box.js";
 
 export function startGame(map) {
   initMap(map);
@@ -42,28 +45,17 @@ export function startGame(map) {
     if (!activeBox) return;
     switch (e.code) {
       case "ArrowLeft":
-        if (
-          boundaryDetection({ box: activeBox, map, type: "left", offsetX: -1 })
-        ) {
-          return;
-        }
-
-        if (hitLeftBox(activeBox, map)) {
+        if (hitLeftBoundary(activeBox, map) || hitLeftBox(activeBox, map)) {
           return;
         }
 
         activeBox.x--;
         break;
       case "ArrowRight":
-        if (
-          boundaryDetection({ box: activeBox, map, type: "right", offsetX: 1 })
-        ) {
+        if (hitRightBoundary(activeBox, map) || hitRightBox(activeBox, map)) {
           return;
         }
 
-        if (hitRightBox(activeBox, map)) {
-          return;
-        }
         activeBox.x++;
         break;
       case "ArrowDown":
@@ -71,21 +63,16 @@ export function startGame(map) {
         break;
       case "Space":
         // 需要先看看 旋转后的位置是不是没有障碍的
-        // 左右下 都需要考虑到
-        if (
-          boundaryDetection({ box: activeBox, map, type: "left", offsetX: -1 })
-        ) {
-          return;
-        }
-        if (
-          boundaryDetection({ box: activeBox, map, type: "right", offsetX: 1 })
-        ) {
-          return;
-        }
-        // 下方的话，需要2个 看看是不是碰撞到了边界，和看看是不是碰撞到了other box
-        if (
-          boundaryDetection({ box: activeBox, map, type: "bottom", offsetY: 1 })
-        ) {
+        // 其实我只需要检测 新的 shape 是不是合法的在 map 里面就可以了
+        const box = createBox({
+          x: activeBox.x,
+          y: activeBox.y,
+          shape: activeBox.peerNextRotateShape(),
+        });
+
+        console.log(box.x, box.y);
+        console.log(box.getShape(), map);
+        if (checkBoxLegal(box, map)) {
           return;
         }
 
