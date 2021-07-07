@@ -3,8 +3,11 @@ export * from "./config.js";
 import { config, speedUp, resetSpeed } from "./config";
 import { addBox, initMap, moveDown, render, activeBox, reset } from "./map.js";
 import { add as addTicker } from "./ticker";
-import { collisionDetection, boundaryDetection } from "./collisionDetection";
-import { rotate } from "./rotate";
+import {
+  boundaryDetection,
+  hitRightBox,
+  hitLeftBox,
+} from "./collisionDetection";
 
 export function startGame(map) {
   initMap(map);
@@ -44,14 +47,8 @@ export function startGame(map) {
         ) {
           return;
         }
-        if (
-          collisionDetection({
-            box: activeBox,
-            map,
-            type: "left",
-            offsetX: -1,
-          })
-        ) {
+
+        if (hitLeftBox(activeBox, map)) {
           return;
         }
 
@@ -64,9 +61,7 @@ export function startGame(map) {
           return;
         }
 
-        if (
-          collisionDetection({ box: activeBox, map, type: "right", offsetX: 1 })
-        ) {
+        if (hitRightBox(activeBox, map)) {
           return;
         }
         activeBox.x++;
@@ -75,7 +70,26 @@ export function startGame(map) {
         speedUp();
         break;
       case "Space":
-        activeBox.setShape(rotate(activeBox.getShape()));
+        // 需要先看看 旋转后的位置是不是没有障碍的
+        // 左右下 都需要考虑到
+        if (
+          boundaryDetection({ box: activeBox, map, type: "left", offsetX: -1 })
+        ) {
+          return;
+        }
+        if (
+          boundaryDetection({ box: activeBox, map, type: "right", offsetX: 1 })
+        ) {
+          return;
+        }
+        // 下方的话，需要2个 看看是不是碰撞到了边界，和看看是不是碰撞到了other box
+        if (
+          boundaryDetection({ box: activeBox, map, type: "bottom", offsetY: 1 })
+        ) {
+          return;
+        }
+
+        activeBox.rotate();
         break;
     }
   }

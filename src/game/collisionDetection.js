@@ -1,18 +1,9 @@
-export function collisionDetection({
-  box,
-  map,
-  type,
-  offsetX = 0,
-  offsetY = 0,
-}) {
-  const fnMap = {
-    bottom: box.getBottomPoints.bind(box),
-    left: box.getLeftPoints.bind(box),
-    right: box.getRightPoints.bind(box),
-  };
-  const getPointsFn = fnMap[type];
+import { getPointsHandler } from "./getBoxPoints";
 
-  return getPointsFn().some((p) => {
+function hitBox({ box, map, type, offsetX = 0, offsetY = 0 }) {
+  const getPointsFn = getPointsHandler(type);
+
+  return getPointsFn(box.getShape()).some((p) => {
     // 把 box 的坐标转换为 map 的 也就是全局的坐标，然后+上 offsetY 看看
     // 因为 point 都已经是有值得点了，所以不需要额外的判断
     const col = box.x + p.x;
@@ -22,6 +13,34 @@ export function collisionDetection({
     return map[row + offsetY][col + offsetX] === -1;
   });
 }
+
+export function hitRightBox(box, map) {
+  return hitBox({
+    box,
+    map,
+    type: "right",
+    offsetX: 1,
+  });
+}
+
+export function hitLeftBox(box, map) {
+  return hitBox({
+    box,
+    map,
+    type: "left",
+    offsetX: -1,
+  });
+}
+
+export function hitBottomBox(box, map) {
+  return hitBox({
+    box,
+    map,
+    type: "bottom",
+    offsetY: 1,
+  });
+}
+
 
 // 检测是否超出边界
 export function boundaryDetection({

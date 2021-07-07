@@ -1,6 +1,6 @@
 import { config } from "./config";
 import { createBox } from "./Box";
-import { collisionDetection, boundaryDetection } from "./collisionDetection";
+import { boundaryDetection, hitBottomBox } from "./collisionDetection";
 import { lineElimination } from "./lineElimination";
 import { randomGenerateShape } from "./generateShape";
 
@@ -26,13 +26,8 @@ export function moveDown(map) {
   }
 
   // 下面是不是有其他的 box
-  if (collisionDetection({ box: activeBox, map, offsetY: 1, type: "bottom" })) {
-    console.log("碰到了");
-    // TODO  需要把 map  deepClone 来进行调试
-    console.log(activeBox);
-    console.log(map);
+  if (hitBottomBox(activeBox, map)) {
     nextBox(map);
-    // throw new Error();
     return;
   }
   activeBox.y++;
@@ -40,7 +35,10 @@ export function moveDown(map) {
 
 // 碰撞检测
 export function addBox() {
-  const box = createBox({ shape: randomGenerateShape() });
+  const { shape, rotateStrategy } = randomGenerateShape();
+
+  const box = createBox({ shape });
+  box.setRotateStrategy(rotateStrategy);
   box.center();
   activeBox = box;
 }

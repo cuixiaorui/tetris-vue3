@@ -1,4 +1,4 @@
-import { collisionDetection } from "./collisionDetection.js";
+import { hitBottomBox, hitLeftBox } from "./collisionDetection.js";
 import { Box } from "./Box";
 
 test("bottom", () => {
@@ -18,9 +18,7 @@ test("bottom", () => {
     [0, 3, 0],
   ]);
 
-  expect(collisionDetection({ box, map, offsetY: 1, type: "bottom" })).toBe(
-    true
-  );
+  expect(hitBottomBox(box, map)).toBe(true);
 });
 
 describe("left", () => {
@@ -40,8 +38,6 @@ describe("left", () => {
       [0, 2, 0],
     ]);
 
-    expect(collisionDetection({ box, map, type: "left", offsetX: -1 })).toBe(
-      false
-    );
+    expect(hitLeftBox(box, map)).toBe(false);
   });
 });

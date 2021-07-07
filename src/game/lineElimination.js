@@ -5,9 +5,10 @@ export function lineElimination(map) {
 
   // 需要先删除前面的，在删除后面的，防止数据的移动
   // 所有用得 reverse 来调换一下顺序
+  const col = map[0].length;
+
   lines.reverse().forEach((line) => {
     map.splice(line, 1);
-    const col = map[line].length;
     // TODO 看看有没有更优雅的创建数组的方式
     let arr = [];
     for (let i = 0; i < col; i++) {
