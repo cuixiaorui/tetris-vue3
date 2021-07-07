@@ -8,6 +8,22 @@ export class Box {
       [2, 2, 0],
       [0, 2, 0],
     ];
+    this._rotateIndex = 0;
+    this._rotateStrategy = [];
+  }
+
+  setRotateStrategy(strategy) {
+    if (strategy) {
+      this._rotateStrategy = strategy;
+    }
+  }
+
+  rotate() {
+    const rotateFn = this._rotateStrategy[this._rotateIndex];
+    this.shape = rotateFn(this.shape);
+
+    this._rotateIndex++;
+    if (this._rotateIndex >= this._rotateStrategy.length) this._rotateIndex = 0;
   }
 
   center() {
