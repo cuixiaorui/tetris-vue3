@@ -1,5 +1,5 @@
-import { hitBottomBox, hitLeftBox, checkBoxLegal } from "./hit.js";
-import { Box } from "./Box";
+import { hitBottomBox, hitLeftBox, checkBoxLegal } from "../src/game/hit.js";
+import { Box } from "../src/game/Box";
 
 test("bottom", () => {
   const map = [

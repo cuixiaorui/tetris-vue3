@@ -2,17 +2,19 @@ const tickers = new Set();
 
 // ticker
 let startTime = Date.now();
-function animation() {
+function animate() {
   const interval = Date.now() - startTime;
+
   for (const ticker of tickers) {
     ticker(interval);
   }
 
   startTime = Date.now();
-  requestAnimationFrame(animation);
+
+  requestAnimationFrame(animate);
 }
 
-requestAnimationFrame(animation);
+requestAnimationFrame(animate);
 
 export function add(fn) {
   tickers.add(fn);

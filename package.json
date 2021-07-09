@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
+    "mitt": "^3.0.0",
     "vue": "^3.0.5"
   },
   "devDependencies": {

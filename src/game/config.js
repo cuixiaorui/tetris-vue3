@@ -6,7 +6,7 @@ export const config = {
     speedFactor: 0.6,
     speedMin: 30,
   },
-  block: {
+  box: {
     width: 40,
     height: 40,
   },

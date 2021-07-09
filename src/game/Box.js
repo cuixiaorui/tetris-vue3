@@ -1,7 +1,9 @@
+import { randomGenerateShape } from "./generateShape";
 export class Box {
   constructor(options = {}) {
     this._x = options.x || 0;
     this._y = options.y || 0;
+    this._type = options.type || "";
     this.shape = options.shape || [
       [2, 0, 0],
       [2, 2, 0],
@@ -32,11 +34,6 @@ export class Box {
     return index;
   }
 
-  center() {
-    // TODO 以后在实现
-    // this._x = Math.floor((config.game.col - this._width) * 0.5);
-  }
-
   get x() {
     return this._x;
   }
@@ -53,6 +50,10 @@ export class Box {
     this._y = val;
   }
 
+  get type() {
+    return this._type;
+  }
+
   getShape() {
     return this.shape;
   }
@@ -67,6 +68,16 @@ export class Box {
   }
 }
 
-export function createBox({ x, y, shape } = {}) {
-  return new Box({ x, y, shape });
+export function createBox({ x, y, shape, type } = {}) {
+  return new Box({ x, y, shape, type });
+}
+
+export function randomCreateBox() {
+  const { shape, rotateStrategy, type } = randomGenerateShape();
+  console.log(type);
+
+  const box = createBox({ shape, type });
+  box.setRotateStrategy(rotateStrategy);
+
+  return box;
 }

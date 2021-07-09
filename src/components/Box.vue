@@ -1,30 +1,27 @@
 <template>
-  <div class="block" :style="blockStyleInfo">
+  <div class="box" :style="blockStyleInfo">
     <div class="inBox" :style="styleInfo"></div>
   </div>
 </template>
 
 <script setup>
 import { defineProps, computed } from "vue";
-import { config } from "../game";
 
 const props = defineProps(["type"]);
 
 const blockStyleInfo = computed(() => {
   return {
-    borderColor: props.type === 0 ? "#879372" : "black"
+    borderColor: props.type === 0 ? "#879372" : "black",
   };
 });
 const styleInfo = computed(() => {
   return {
-    // width: config.block.width + "px",
-    // height: config.block.height + "px",
     background: props.type === 0 ? "#879372" : "black",
   };
 });
 </script>
 <style scoped>
-.block {
+.box {
   width: 20px;
   height: 20px;
   border: 3px solid #879372;
