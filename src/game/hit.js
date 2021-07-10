@@ -8,9 +8,9 @@ function _hitBox({ box, map, type, offsetX = 0, offsetY = 0 }) {
     // 因为 point 都已经是有值得点了，所以不需要额外的判断
     const col = box.x + p.x;
     const row = box.y + p.y;
-    // 如果这个 col 和 row 点 转换不了 map 里面的点的话，那么就说明这个点是超出屏幕了
 
-    return map[row + offsetY][col + offsetX] === -1;
+
+    return map[row + offsetY][col + offsetX] < 0;
   });
 }
 
@@ -109,7 +109,7 @@ export function checkBoxLegal(box, map) {
 
       const beyondBorder = checkCol || checkRow;
 
-      const isNotEmpty = map[yy][xx] === -1;
+      const isNotEmpty = map[yy][xx] < 0;
 
       if (beyondBorder || isNotEmpty) {
         return true;

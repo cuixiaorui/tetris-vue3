@@ -1,3 +1,9 @@
+/**
+ * 
+ * 消行
+ * @param {} map 
+ * @returns 返回消除的行数
+ */
 export function lineElimination(map) {
   // 1. 先把所有列都为 1 的行找出来 -》 得到一个索引数组
   // 2. 基于行的索引把
@@ -16,6 +22,8 @@ export function lineElimination(map) {
     }
     map.unshift(arr);
   });
+
+  return lines.length;
 }
 
 // 得到的是索引
@@ -27,7 +35,7 @@ export function canEliminationLines(map) {
   for (let i = row - 1; i >= 0; i--) {
     let hit = true;
     for (let j = 0; j < col; j++) {
-      if (!map[i][j]) {
+      if (map[i][j] !== -1) {
         hit = false;
         break;
       }

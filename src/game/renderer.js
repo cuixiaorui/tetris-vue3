@@ -26,7 +26,7 @@ function reset(map) {
 
   for (let i = 0; i < row; i++) {
     for (let j = 0; j < col; j++) {
-      if (map[i][j] !== -1) {
+      if (map[i][j] >= 0) {
         map[i][j] = 0;
       }
     }

@@ -8,7 +8,7 @@
 // 5. 创建 box
 import { createBox } from "./Box";
 import { getBoxsInfoByKey } from "./generateShape";
-import { emitter } from "./events";
+import { socket } from "../utils/socket";
 export class Rival {
   constructor() {
     this._game = null;
@@ -21,15 +21,21 @@ export class Rival {
   }
 
   initEvents() {
-    emitter.on("moveBoxToDown", this.moveBoxToDown.bind(this));
-    emitter.on("moveBoxToLeft", this.moveBoxToLeft.bind(this));
-    emitter.on("moveBoxToRight", this.moveBoxToRight.bind(this));
-    emitter.on("rotateBox", this.rotateBox.bind(this));
-    emitter.on("createBox", this.createBox.bind(this));
+    socket.on("moveBoxToDown", this.moveBoxToDown.bind(this));
+    socket.on("moveBoxToLeft", this.moveBoxToLeft.bind(this));
+    socket.on("moveBoxToRight", this.moveBoxToRight.bind(this));
+    socket.on("rotateBox", this.rotateBox.bind(this));
+    socket.on("createBox", this.createBox.bind(this));
+    socket.on("syncAddLine", this.syncAddLine.bind(this));
+  }
+
+  syncAddLine(num) {
+    for (let i = 0; i < num; i++) {
+      this._game.addOneLine();
+    }
   }
 
   createBox(info) {
-    console.log("Rival", "createBox");
     this._boxInfo = info;
     if (!this._isMounted) {
       this._isMounted = true;
@@ -59,7 +65,6 @@ export class Rival {
   }
 
   createBoxStrategy() {
-    console.log("Rival", "createBoxStrategy");
     const { shape, rotateStrategy } = getBoxsInfoByKey(this._boxInfo.type);
     const box = createBox({
       x: this._boxInfo.x,

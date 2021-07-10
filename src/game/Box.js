@@ -74,7 +74,6 @@ export function createBox({ x, y, shape, type } = {}) {
 
 export function randomCreateBox() {
   const { shape, rotateStrategy, type } = randomGenerateShape();
-  console.log(type);
 
   const box = createBox({ shape, type });
   box.setRotateStrategy(rotateStrategy);

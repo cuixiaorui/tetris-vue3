@@ -9,7 +9,6 @@
 
 <script setup>
 import Game from "./components/Game.vue";
-
 import { startGame } from "./game/index.js";
 
 function handleStartGame() {

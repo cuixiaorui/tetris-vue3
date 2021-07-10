@@ -11,13 +11,16 @@
 <script setup>
 import Box from "./Box.vue";
 import { reactive, defineProps } from "vue";
-import { gameRow, gameCol, initGame } from "../game";
+import { gameRow, gameCol, initSelfGame, initRivalGame } from "../game";
 
 const props = defineProps(["userType"]);
-
 const map = reactive([]);
 
-initGame({ map, userType: props.userType });
+if (props.userType === "self") {
+  initSelfGame(map);
+} else {
+  initRivalGame(map);
+}
 </script>
 
 <style scoped>

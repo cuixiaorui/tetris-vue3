@@ -15,7 +15,6 @@ export class StateManagement {
 
   speedUp() {
     this._speed = this._speed * config.game.speedFactor;
-    console.log(this._speed);
     if (this._speed <= config.game.speedMin) {
       this._speed = config.game.speedMin;
     }

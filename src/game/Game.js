@@ -12,14 +12,16 @@ import {
 import { createBox } from "./Box";
 import { lineElimination } from "./eliminate";
 import { render } from "./renderer";
-import { addToMap, initMap } from "./map";
+import { addToMap, initMap, addOneLineToMap } from "./map";
 import { StateManagement } from "./StateManagement.js";
+import mitt from "mitt";
 export class Game {
   constructor(map) {
     this._map = map;
     this._activeBox = null;
     this._gameTicker = null;
     this._player = null;
+    this.emitter = mitt();
     this._stateManagement = new StateManagement();
     initMap(this._map);
   }
@@ -49,7 +51,9 @@ export class Game {
 
   nextBox(activeBox) {
     addToMap(activeBox, this._map);
-    lineElimination(this._map);
+    const num = lineElimination(this._map);
+    // 通知消除的行数
+    this.emitter.emit("eliminateLine", num);
     this.addBox();
   }
 
@@ -117,5 +121,9 @@ export class Game {
 
   getSpeed() {
     return this._stateManagement.speed;
+  }
+
+  addOneLine() {
+    addOneLineToMap(this._map);
   }
 }
