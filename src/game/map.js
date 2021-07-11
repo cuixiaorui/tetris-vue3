@@ -1,4 +1,3 @@
-
 // 小于 0 的话是参与碰撞检测的
 // -1 的是可以消除的行
 // -2 的是不可以消除的行
@@ -20,8 +19,10 @@ export function addToMap(box, map) {
   for (let i = 0; i < shape.length; i++) {
     for (let j = 0; j < shape[i].length; j++) {
       // 如果当前的这个位置已经被占用了，那么后来的就不可以被赋值
-      if (shape[i][j]) {
-        map[i + box.y][j + box.x] = -1;
+      if (checkLegalPointInMap({ x: j + box.x, y: i + box.y })) {
+        if (shape[i][j]) {
+          map[i + box.y][j + box.x] = -1;
+        }
       }
     }
   }
@@ -65,4 +66,18 @@ export function addOneLineToMap(map) {
 
     map.push(arr);
   }
+}
+
+/**
+ * 检测 point 是否可以再map 中渲染
+ * @param {} box
+ * @returns boolean
+ */
+export function checkLegalPointInMap(point) {
+  const mapRow = config.game.row;
+  const mapCol = config.game.col;
+
+  const checkCol = point.x < 0 || point.x >= mapCol;
+  const checkRow = point.y < 0 || point.y >= mapRow;
+  return !checkCol && !checkRow;
 }

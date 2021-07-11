@@ -11,12 +11,12 @@ export class Player {
   constructor() {
     this._game = null;
     socket.on("addLine", this.addLine.bind(this));
+    socket.on("gameWon", this.gameWon.bind(this));
   }
 
   init() {
     this._game.addBox();
     this.initKeyboard();
-
   }
 
   addGame(game) {
@@ -24,6 +24,17 @@ export class Player {
     this._game.setGameTicker(this.handleGameTicker.call(this));
     this._game.setCreateBoxStrategy(this.createBoxStrategy.bind(this));
     this._game.emitter.on("eliminateLine", this.handleEliminateLine.bind(this));
+    this._game.emitter.on("gameOver", this.gameOver.bind(this));
+  }
+  gameWon() {
+    alert("You Won !!!");
+    this._game.endGame();
+  }
+
+  gameOver() {
+    alert("game over , You lose !!!");
+    socket.emit("gameOver", "lose");
+    this._game.endGame();
   }
 
   handleEliminateLine(num) {
@@ -37,7 +48,6 @@ export class Player {
       this._game.addOneLine();
     }
     // 同步当前的自己的数据给别人展示
-    
   }
 
   createBoxStrategy() {

@@ -12,6 +12,10 @@ const io = require("socket.io")(server, {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
+  socket.on("gameOver", (state) => {
+    socket.broadcast.emit("gameWon", state);
+  });
+
   // 1. 接受 user 发过来的数据
   // 2. 广播给其他的 user
   socket.on("eliminateLine", (num) => {

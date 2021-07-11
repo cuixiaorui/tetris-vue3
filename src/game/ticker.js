@@ -1,4 +1,4 @@
-const tickers = new Set();
+const tickers = [];
 
 // ticker
 let startTime = Date.now();
@@ -6,7 +6,7 @@ function animate() {
   const interval = Date.now() - startTime;
 
   for (const ticker of tickers) {
-    ticker(interval);
+    ticker.fn.call(ticker.listener, interval);
   }
 
   startTime = Date.now();
@@ -16,10 +16,24 @@ function animate() {
 
 requestAnimationFrame(animate);
 
-export function add(fn) {
-  tickers.add(fn);
+export function addTicker(fn, listener) {
+  for (let i = 0; i < tickers.length; i++) {
+    if (tickers[i].fn == fn && tickers[i].listener == listener) {
+      return;
+    }
+  }
+
+  tickers.push({
+    fn,
+    listener,
+  });
 }
 
-export function remove(fn) {
-  tickers.delete(fn);
+export function removeTicker(fn, listener) {
+  for (let i = 0; i < tickers.length; i++) {
+    if (tickers[i].fn == fn && tickers[i].listener == listener) {
+      tickers.splice(i, 1);
+    }
+  }
 }
+

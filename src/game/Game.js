@@ -1,5 +1,5 @@
 // 游戏场景
-import { add as addTicker } from "./ticker";
+import { addTicker, removeTicker } from "./ticker";
 import {
   hitRightBox,
   hitLeftBox,
@@ -33,7 +33,8 @@ export class Game {
 
   start() {
     this._player.init();
-    addTicker(this.handleTicker.bind(this));
+
+    addTicker(this.handleTicker, this);
   }
 
   setGameTicker(fn) {
@@ -54,7 +55,21 @@ export class Game {
     const num = lineElimination(this._map);
     // 通知消除的行数
     this.emitter.emit("eliminateLine", num);
+    // 检测是不是游戏结束了
+    if (this.checkGameOver()) {
+      this.emitter.emit("gameOver");
+      return;
+    }
     this.addBox();
+  }
+
+  endGame() {
+    removeTicker(this.handleTicker, this);
+  }
+
+  checkGameOver() {
+    // 需要在新的 box 来之前检测
+    return this._activeBox.y < 0;
   }
 
   addBox() {
