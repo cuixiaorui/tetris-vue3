@@ -5,25 +5,28 @@ import {
   hitLeftBox,
   hitRightBoundary,
   hitLeftBoundary,
-  checkBoxLegal,
   hitBottomBox,
   hitBottomBoundary,
 } from "./hit";
 import { createBox } from "./Box";
 import { lineElimination } from "./eliminate";
 import { render } from "./renderer";
-import { addToMap, initMap, addOneLineToMap } from "./map";
+import { addToMap, initMap, addOneLineToMap, checkLegalBoxInMap } from "./map";
 import { StateManagement } from "./StateManagement.js";
 import mitt from "mitt";
 export class Game {
   constructor(map) {
     this._map = map;
     this._activeBox = null;
-    this._gameTicker = null;
     this._player = null;
-    this.emitter = mitt();
+    this._emitter = mitt();
     this._stateManagement = new StateManagement();
     initMap(this._map);
+  }
+
+  start() {
+    this._player.init();
+    addTicker(this.handleTicker, this);
   }
 
   addPlayer(player) {
@@ -31,22 +34,12 @@ export class Game {
     this._player.addGame(this);
   }
 
-  start() {
-    this._player.init();
-
-    addTicker(this.handleTicker, this);
-  }
-
-  setGameTicker(fn) {
-    this._gameTicker = fn;
-  }
-
   setCreateBoxStrategy(strategy) {
     this._createBoxStrategy = strategy;
   }
 
   handleTicker(i) {
-    if (this._gameTicker) this._gameTicker(i);
+    this._emitter.emit("rerender", i);
     render(this._activeBox, this._map);
   }
 
@@ -54,17 +47,20 @@ export class Game {
     addToMap(activeBox, this._map);
     const num = lineElimination(this._map);
     // 通知消除的行数
-    this.emitter.emit("eliminateLine", num);
+    this._emitter.emit("eliminateLine", num);
     // 检测是不是游戏结束了
     if (this.checkGameOver()) {
-      this.emitter.emit("gameOver");
+      this._emitter.emit("gameOver");
       return;
     }
     this.addBox();
   }
 
   endGame() {
+    // TODO
+    // socket 的所有侦听也需要都删除
     removeTicker(this.handleTicker, this);
+    this._emitter.all.clear();
   }
 
   checkGameOver() {
@@ -85,9 +81,6 @@ export class Game {
   }
 
   moveBoxToDown() {
-    // 到底有2种情况
-    // 1. 真的到底
-    // 2. 下面是不是有其他的 box
     if (
       hitBottomBoundary(this._activeBox, this._map) ||
       hitBottomBox(this._activeBox, this._map)
@@ -127,7 +120,7 @@ export class Game {
       shape: this._activeBox.peerNextRotateShape(),
     });
 
-    if (checkBoxLegal(box, this._map)) {
+    if (checkLegalBoxInMap(box, this._map)) {
       return;
     }
 
@@ -140,5 +133,9 @@ export class Game {
 
   addOneLine() {
     addOneLineToMap(this._map);
+  }
+
+  get emitter() {
+    return this._emitter;
   }
 }

@@ -1,6 +1,9 @@
 import { randomCreateBox } from "./Box";
 import { socket } from "../utils/socket";
 
+// TODO 
+// 抽离出 BasePlayer
+// 把 player  和 dival 公共的逻辑都抽离过来
 // export default class BasePlayer {
 //   constructor() {
 //     this._game = null;
@@ -21,10 +24,10 @@ export class Player {
 
   addGame(game) {
     this._game = game;
-    this._game.setGameTicker(this.handleGameTicker.call(this));
     this._game.setCreateBoxStrategy(this.createBoxStrategy.bind(this));
     this._game.emitter.on("eliminateLine", this.handleEliminateLine.bind(this));
     this._game.emitter.on("gameOver", this.gameOver.bind(this));
+    this._game.emitter.on("rerender", this.gameRerender.call(this));
   }
   gameWon() {
     alert("You Won !!!");
@@ -62,7 +65,7 @@ export class Player {
     return box;
   }
 
-  handleGameTicker() {
+  gameRerender() {
     let n = 0;
     return (i) => {
       n += i;

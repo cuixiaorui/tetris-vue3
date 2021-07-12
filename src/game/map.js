@@ -69,7 +69,7 @@ export function addOneLineToMap(map) {
 }
 
 /**
- * 检测 point 是否可以再map 中渲染
+ * 检测 point 是否可以再 map 中渲染
  * @param {} box
  * @returns boolean
  */
@@ -80,4 +80,32 @@ export function checkLegalPointInMap(point) {
   const checkCol = point.x < 0 || point.x >= mapCol;
   const checkRow = point.y < 0 || point.y >= mapRow;
   return !checkCol && !checkRow;
+}
+
+export function checkLegalBoxInMap(box, map) {
+  const shape = box.getShape();
+  const row = shape.length;
+  const col = shape[0].length;
+
+  for (let i = 0; i < row; i++) {
+    for (let j = 0; j < col; j++) {
+      const xx = box.x + j;
+      const yy = box.y + i;
+
+      if (!checkLegalPointInMap({ x: xx, y: yy })) return true;
+      if (isHardPoint({ row: yy, col: xx, map })) return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * 是不是硬点
+ * 硬点指的是 type 为小于 0 的点
+ * @param {} x
+ * @param {*} y
+ */
+export function isHardPoint({ row, col, map }) {
+  return map[row][col] < 0;
 }

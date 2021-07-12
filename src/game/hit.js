@@ -9,7 +9,6 @@ function _hitBox({ box, map, type, offsetX = 0, offsetY = 0 }) {
     const col = box.x + p.x;
     const row = box.y + p.y;
 
-
     return map[row + offsetY][col + offsetX] < 0;
   });
 }
@@ -84,38 +83,4 @@ export function hitBottomBoundary(box, map) {
     type: "bottom",
     offsetY: 1,
   });
-}
-
-/**
- *
- * 检测 box 所有点的合法性
- * @param {} box
- */
-export function checkBoxLegal(box, map) {
-  const shape = box.getShape();
-  const row = shape.length;
-  const col = shape[0].length;
-
-  const mapRow = map.length;
-  const mapCol = map[0].length;
-
-  for (let i = 0; i < row; i++) {
-    for (let j = 0; j < col; j++) {
-      const xx = box.x + j;
-      const yy = box.y + i;
-
-      const checkCol = xx < 0 || xx >= mapCol;
-      const checkRow = yy < 0 || yy >= mapRow;
-
-      const beyondBorder = checkCol || checkRow;
-
-      const isNotEmpty = map[yy][xx] < 0;
-
-      if (beyondBorder || isNotEmpty) {
-        return true;
-      }
-    }
-  }
-
-  return false;
 }
