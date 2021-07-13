@@ -76,12 +76,12 @@ describe("map", () => {
       ];
 
       const box = new Box({ x: 8, y: 5 });
-      box.setShape([
+      box.shape = [
         [0, 0, 0, 0],
         [7, 7, 7, 7],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-      ]);
+      ];
 
       expect(checkLegalBoxInMap(box, map)).toBe(true);
     });
@@ -106,12 +106,12 @@ describe("map", () => {
       ];
 
       const box = new Box({ x: 1, y: 5 });
-      box.setShape([
+      box.shape = [
         [0, 0, 0, 0],
         [7, 7, 7, 7],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-      ]);
+      ];
 
       expect(checkLegalBoxInMap(box, map)).toBe(true);
     });

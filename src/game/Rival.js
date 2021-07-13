@@ -7,20 +7,27 @@
 // 4. 旋转
 // 5. 创建 box
 import { createBox } from "./Box";
-import { getBoxsInfoByKey } from "./generateShape";
+import { getBoxsInfoByKey } from "./Box";
 import { socket } from "../utils/socket";
 export class Rival {
   constructor() {
     this._game = null;
     this._boxInfo = null;
     this._isMounted = false;
-    this.initEvents();
+    this.initSocketEvents();
   }
+
+  addGame(game) {
+    this._game = game;
+    this._game.autoMoveToDown = false;
+    this._game.setCreateBoxStrategy(this.createBoxStrategy.bind(this));
+  }
+
   init() {
     console.log("Rival");
   }
 
-  initEvents() {
+  initSocketEvents() {
     socket.on("moveBoxToDown", this.moveBoxToDown.bind(this));
     socket.on("moveBoxToLeft", this.moveBoxToLeft.bind(this));
     socket.on("moveBoxToRight", this.moveBoxToRight.bind(this));
@@ -39,6 +46,9 @@ export class Rival {
     this._boxInfo = info;
     if (!this._isMounted) {
       this._isMounted = true;
+      // 主动触发 addBox 逻辑
+      // 触发 addBox 的时候 game 会调用 createBoxStrategy 方法
+      // 这样才会把 box 添加到 game 内
       this._game.addBox();
     }
   }
@@ -57,11 +67,6 @@ export class Rival {
 
   moveBoxToDown() {
     this._game.moveBoxToDown();
-  }
-
-  addGame(game) {
-    this._game = game;
-    this._game.setCreateBoxStrategy(this.createBoxStrategy.bind(this));
   }
 
   createBoxStrategy() {

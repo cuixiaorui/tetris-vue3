@@ -1,15 +1,6 @@
 import { randomCreateBox } from "./Box";
 import { socket } from "../utils/socket";
 
-// TODO 
-// 抽离出 BasePlayer
-// 把 player  和 dival 公共的逻辑都抽离过来
-// export default class BasePlayer {
-//   constructor() {
-//     this._game = null;
-//   }
-// }
-
 export class Player {
   constructor() {
     this._game = null;
@@ -17,18 +8,24 @@ export class Player {
     socket.on("gameWon", this.gameWon.bind(this));
   }
 
-  init() {
-    this._game.addBox();
-    this.initKeyboard();
-  }
-
   addGame(game) {
     this._game = game;
     this._game.setCreateBoxStrategy(this.createBoxStrategy.bind(this));
     this._game.emitter.on("eliminateLine", this.handleEliminateLine.bind(this));
     this._game.emitter.on("gameOver", this.gameOver.bind(this));
-    this._game.emitter.on("rerender", this.gameRerender.call(this));
+    this._game.emitter.on("autoMoveToDown", this.autoMoveToDown.bind(this));
   }
+
+  init() {
+    this.initKeyboard();
+    // 初始化的时候，让 game 开始掉落 box
+    this._game.addBox();
+  }
+
+  autoMoveToDown() {
+    socket.emit("moveBoxToDown");
+  }
+
   gameWon() {
     alert("You Won !!!");
     this._game.endGame();
@@ -41,7 +38,6 @@ export class Player {
   }
 
   handleEliminateLine(num) {
-    // console.log(`消除了 ${num} 行`);
     socket.emit("eliminateLine", num);
   }
 
@@ -50,7 +46,6 @@ export class Player {
     for (let i = 0; i < num; i++) {
       this._game.addOneLine();
     }
-    // 同步当前的自己的数据给别人展示
   }
 
   createBoxStrategy() {
@@ -63,18 +58,6 @@ export class Player {
     });
 
     return box;
-  }
-
-  gameRerender() {
-    let n = 0;
-    return (i) => {
-      n += i;
-      if (n >= this._game.getSpeed()) {
-        n = 0;
-        this._game.moveBoxToDown();
-        socket.emit("moveBoxToDown");
-      }
-    };
   }
 
   initKeyboard() {

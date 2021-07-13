@@ -2,5 +2,5 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import { initSocket } from "./utils/socket";
 
-initSocket()
+initSocket();
 createApp(App).mount("#app");

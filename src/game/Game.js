@@ -20,6 +20,7 @@ export class Game {
     this._activeBox = null;
     this._player = null;
     this._emitter = mitt();
+    this._autoMoveToDown = true;
     this._stateManagement = new StateManagement();
     initMap(this._map);
   }
@@ -38,9 +39,24 @@ export class Game {
     this._createBoxStrategy = strategy;
   }
 
+  set autoMoveToDown(val) {
+    this._autoMoveToDown = val;
+  }
+
   handleTicker(i) {
-    this._emitter.emit("rerender", i);
+    this.handleAutoMoveToDown(i);
     render(this._activeBox, this._map);
+  }
+
+  _n = 0;
+  handleAutoMoveToDown(i) {
+    if (!this._autoMoveToDown) return;
+    this._n += i;
+    if (this._n >= this.getSpeed()) {
+      this._n = 0;
+      this.moveBoxToDown();
+      this._emitter.emit("autoMoveToDown");
+    }
   }
 
   nextBox(activeBox) {
@@ -57,8 +73,6 @@ export class Game {
   }
 
   endGame() {
-    // TODO
-    // socket 的所有侦听也需要都删除
     removeTicker(this.handleTicker, this);
     this._emitter.all.clear();
   }
@@ -81,6 +95,7 @@ export class Game {
   }
 
   moveBoxToDown() {
+    if (!this._activeBox) return;
     if (
       hitBottomBoundary(this._activeBox, this._map) ||
       hitBottomBox(this._activeBox, this._map)

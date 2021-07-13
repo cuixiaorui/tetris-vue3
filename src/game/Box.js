@@ -1,10 +1,10 @@
-import { randomGenerateShape } from "./generateShape";
+import { rotate, rotate270 } from "./matrix";
 export class Box {
   constructor(options = {}) {
     this._x = options.x || 0;
     this._y = options.y || 0;
     this._type = options.type || "";
-    this.shape = options.shape || [
+    this._shape = options.shape || [
       [2, 0, 0],
       [2, 2, 0],
       [0, 2, 0],
@@ -34,6 +34,11 @@ export class Box {
     return index;
   }
 
+  peerNextRotateShape() {
+    const rotateFn = this._rotateStrategy[this.nextRotateIndex()];
+    return rotateFn(this.shape);
+  }
+
   get x() {
     return this._x;
   }
@@ -54,17 +59,12 @@ export class Box {
     return this._type;
   }
 
-  getShape() {
-    return this.shape;
+  get shape() {
+    return this._shape;
   }
 
-  setShape(val) {
-    this.shape = val;
-  }
-
-  peerNextRotateShape() {
-    const rotateFn = this._rotateStrategy[this.nextRotateIndex()];
-    return rotateFn(this.shape);
+  set shape(val) {
+    this._shape = val;
   }
 }
 
@@ -79,4 +79,75 @@ export function randomCreateBox() {
   box.setRotateStrategy(rotateStrategy);
 
   return box;
+}
+
+const boxsInfo = {
+  0: {
+    type: 0,
+    shape: [
+      [1, 1],
+      [1, 1],
+    ],
+  },
+
+  1: {
+    type: 1,
+    shape: [
+      [0, 1, 1],
+      [1, 1, 0],
+      [0, 0, 0],
+    ],
+    rotateStrategy: [rotate, rotate270],
+  },
+
+  2: {
+    type: 2,
+    shape: [
+      [5, 5, 5],
+      [0, 5, 0],
+      [0, 0, 0],
+    ],
+    rotateStrategy: [rotate, rotate, rotate, rotate],
+  },
+
+  3: {
+    type: 3,
+    shape: [
+      [0, 7, 0, 0],
+      [0, 7, 0, 0],
+      [0, 7, 0, 0],
+      [0, 7, 0, 0],
+    ],
+    rotateStrategy: [rotate, rotate270],
+  },
+  4: {
+    type: 4,
+    shape: [
+      [4, 0, 0],
+      [4, 0, 0],
+      [4, 4, 0],
+    ],
+    rotateStrategy: [rotate, rotate, rotate, rotate],
+  },
+
+  5: {
+    type: 5,
+    shape: [
+      [0, 0, 6],
+      [0, 0, 6],
+      [0, 6, 6],
+    ],
+    rotateStrategy: [rotate, rotate, rotate, rotate],
+  },
+};
+
+function randomGenerateShape() {
+  const len = Object.keys(boxsInfo).length - 1;
+  const index = Math.ceil(Math.random() * len);
+
+  return boxsInfo[index];
+}
+
+export function getBoxsInfoByKey(key) {
+  return boxsInfo[key];
 }

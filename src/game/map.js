@@ -14,7 +14,7 @@ export function initMap(map) {
 }
 
 export function addToMap(box, map) {
-  const shape = box.getShape();
+  const shape = box.shape;
 
   for (let i = 0; i < shape.length; i++) {
     for (let j = 0; j < shape[i].length; j++) {
@@ -55,16 +55,8 @@ export function addOneLineToMap(map) {
   const minLine = getMinLine();
   if (minLine !== -1) {
     map.splice(minLine, 1);
-
-    // 创建都是 -1 的 array 给添加进去
-    let arr = [];
-    for (let i = 0; i < col; i++) {
-      // -2 标记这行是不可以消除的
-      // 但是还参与碰撞
-      arr.push(-2);
-    }
-
-    map.push(arr);
+    // -2 标记这行是不可以消除的
+    map.push(Array(col).fill(-2));
   }
 }
 
@@ -83,7 +75,7 @@ export function checkLegalPointInMap(point) {
 }
 
 export function checkLegalBoxInMap(box, map) {
-  const shape = box.getShape();
+  const shape = box.shape;
   const row = shape.length;
   const col = shape[0].length;
 

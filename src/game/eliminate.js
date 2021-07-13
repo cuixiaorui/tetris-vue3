@@ -1,7 +1,7 @@
 /**
- * 
+ *
  * 消行
- * @param {} map 
+ * @param {} map
  * @returns 返回消除的行数
  */
 export function lineElimination(map) {
@@ -15,12 +15,7 @@ export function lineElimination(map) {
 
   lines.reverse().forEach((line) => {
     map.splice(line, 1);
-    // TODO 看看有没有更优雅的创建数组的方式
-    let arr = [];
-    for (let i = 0; i < col; i++) {
-      arr.push(0);
-    }
-    map.unshift(arr);
+    map.unshift(Array(col).fill(0));
   });
 
   return lines.length;

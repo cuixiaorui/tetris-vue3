@@ -8,7 +8,7 @@ export function render(box, map) {
 function _render(box, map) {
   // 每次只重新 render  active 的这个 box
   // 那些已经不动弹的 box 就不需要刷新了
-  const shape = box.getShape();
+  const shape = box.shape;
 
   for (let i = 0; i < shape.length; i++) {
     for (let j = 0; j < shape[i].length; j++) {

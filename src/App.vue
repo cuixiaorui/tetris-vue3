@@ -3,16 +3,20 @@
     <Game user-type="self"></Game>
     <Game user-type="rival"></Game>
 
-    <button @click="handleStartGame">startGame</button>
+    <button v-show="started" @click="handleStartGame">startGame</button>
   </div>
 </template>
 
 <script setup>
 import Game from "./components/Game.vue";
 import { startGame } from "./game/index.js";
+import { ref } from "vue";
+
+const started = ref(true);
 
 function handleStartGame() {
   startGame();
+  started.value = false;
 }
 </script>
 

@@ -12,3 +12,7 @@ export function initSocket() {
     console.log("connect");
   });
 }
+
+export function clearSocket() {
+  socket.off();
+}

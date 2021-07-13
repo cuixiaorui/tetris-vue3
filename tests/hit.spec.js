@@ -12,11 +12,11 @@ test("bottom", () => {
 
   const box = new Box({ x: 0, y: 1 });
 
-  box.setShape([
+  box.shape = [
     [0, 0, 3],
     [0, 3, 3],
     [0, 3, 0],
-  ]);
+  ];
 
   expect(hitBottomBox(box, map)).toBe(true);
 });
@@ -32,13 +32,12 @@ describe("left", () => {
     ];
 
     const box = new Box({ x: 1, y: 0 });
-    box.setShape([
+    box.shape = [
       [2, 0, 0],
       [2, 2, 0],
       [0, 2, 0],
-    ]);
+    ];
 
     expect(hitLeftBox(box, map)).toBe(false);
   });
 });
-
