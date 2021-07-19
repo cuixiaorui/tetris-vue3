@@ -1,39 +1,22 @@
-const tickers = [];
-
-// ticker
 let startTime = Date.now();
-function animate() {
-  const interval = Date.now() - startTime;
-
-  for (const ticker of tickers) {
-    ticker.fn.call(ticker.listener, interval);
-  }
-
-  startTime = Date.now();
-
-  requestAnimationFrame(animate);
-}
-
-requestAnimationFrame(animate);
-
-export function addTicker(fn, listener) {
-  for (let i = 0; i < tickers.length; i++) {
-    if (tickers[i].fn == fn && tickers[i].listener == listener) {
-      return;
-    }
-  }
-
-  tickers.push({
-    fn,
-    listener,
+const tickerHandler = () => {
+  tickers.forEach((ticker) => {
+    ticker(Date.now() - startTime);
   });
+  startTime = Date.now();
+  requestAnimationFrame(tickerHandler);
+};
+
+requestAnimationFrame(tickerHandler);
+
+const tickers = [];
+export function addTicker(fn) {
+  tickers.push(fn);
 }
 
-export function removeTicker(fn, listener) {
-  for (let i = 0; i < tickers.length; i++) {
-    if (tickers[i].fn == fn && tickers[i].listener == listener) {
-      tickers.splice(i, 1);
-    }
+export function removeTicker(fn) {
+  const index = tickers.indexOf(fn);
+  if (index !== -1) {
+    tickers.splice(index, 1);
   }
 }
-

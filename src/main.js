@@ -1,6 +1,4 @@
-import { createApp } from "vue";
-import App from "./App.vue";
-import { initSocket } from "./utils/socket";
+import { createApp } from 'vue'
+import App from './App.vue'
 
-initSocket();
-createApp(App).mount("#app");
+createApp(App).mount('#app')

@@ -1,22 +1,17 @@
 <template>
-  <div style="display: flex; marge: 10px">
-    <Game user-type="self"></Game>
-    <Game user-type="rival"></Game>
-
-    <button v-show="started" @click="handleStartGame">startGame</button>
+  <div>
+    <Game></Game>
+    <button @click="handleStartGame">startGame</button>
   </div>
 </template>
 
 <script setup>
 import Game from "./components/Game.vue";
-import { startGame } from "./game/index.js";
-import { ref } from "vue";
-
-const started = ref(true);
+import { startGame } from "./game";
 
 function handleStartGame() {
-  startGame();
-  started.value = false;
+  console.log("开始游戏");
+  startGame()
 }
 </script>
 

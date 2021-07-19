@@ -1,28 +1,114 @@
-import { config } from "./config";
-import { Game } from "./Game";
-import { Player } from "./Player";
-import { Rival } from "./Rival";
+// 游戏
+export * from "./config";
 
-export const gameRow = config.game.row;
-export const gameCol = config.game.col;
+import { initMap, addBoxToMap } from "./Map";
+import { Box, createBox } from "./Box";
+import { render } from "./renderer";
+import { addTicker, removeTicker } from "./ticker";
+import { intervalTimer } from "./utils";
+import { eliminateLine } from "./eliminateLine";
+import { gameState, superUpSpeed, resetSpeed, upSpeed } from "./gameState";
+import {
+  hitBottomBoundary,
+  hitLeftBoundary,
+  hitRightBoundary,
+  hitBottomBox,
+  hitLeftBox,
+} from "./hit";
 
-let selfGame = null;
+let activeBox = null;
+let _map = null;
 
-// 自己的游戏需要 start ，别人的不需要 start
-// 因为 dival 初始化要在 self 之前
+// game state
 
-export function initSelfGame(map) {
-  selfGame = new Game(map);
-  selfGame.addPlayer(new Player());
-}
-
-export function initRivalGame(map) {
-  const game = new Game(map);
-  game.addPlayer(new Rival());
-  // 初始化的时候就需要 start 
-  game.start();
+export function initGame(map) {
+  initMap(map);
+  _map = map;
 }
 
 export function startGame() {
-  selfGame.start();
+  //   initMap(map);
+  //   _map = map;
+  activeBox = addBox();
+
+  addTicker(handleTicker);
+
+  window.addEventListener("keyup", (e) => {
+    if (e.code === "ArrowDown") {
+      resetSpeed();
+    }
+  });
+
+  window.addEventListener("keydown", (e) => {
+    switch (e.code) {
+      case "ArrowLeft":
+        leftMoveBox();
+        break;
+      case "ArrowRight":
+        rightMoveBox();
+        break;
+      case "ArrowDown":
+        upSpeed();
+        break;
+      case "ArrowUp":
+        activeBox.rotate();
+        break;
+
+      case "Space":
+        superUpSpeed();
+        break;
+    }
+  });
+}
+
+const needDownMove = intervalTimer();
+function handleTicker(n) {
+  if (needDownMove(n, gameState.downIntervalTime)) {
+    bottomMoveBox();
+  }
+
+  render(activeBox, _map);
+}
+
+function rightMoveBox() {
+  if (hitRightBoundary(activeBox)) return;
+  activeBox.x++;
+}
+
+function leftMoveBox() {
+  if (hitLeftBoundary(activeBox) || hitLeftBox(activeBox, _map)) return;
+  activeBox.x--;
+}
+
+function bottomMoveBox() {
+  // 碰到边界的时候不可以在移动了!!
+  if (hitBottomBoundary(activeBox) || hitBottomBox(activeBox, _map)) {
+    resetSpeed();
+
+    addBoxToMap(activeBox, _map);
+    eliminateLine(_map);
+
+    if (activeBox.y < 0) {
+      gameOver();
+      return;
+    }
+
+    activeBox = addBox();
+    return;
+  }
+
+  activeBox.y++;
+}
+
+function addBox() {
+  // const box = new Box();
+  // box.y = -1;
+  // return box;
+  return createBox();
+}
+
+function gameOver() {
+  alert("game over");
+  // 清理 ticker
+  removeTicker(handleTicker);
 }

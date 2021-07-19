@@ -1,103 +1,34 @@
-// 小于 0 的话是参与碰撞检测的
-// -1 的是可以消除的行
-// -2 的是不可以消除的行
+import { gameRow, gameCol } from "./config";
 
-import { config } from "./config";
 export function initMap(map) {
   // init map
-  for (let i = 0; i < config.game.row; i++) {
+  for (let i = 0; i < gameRow; i++) {
     map[i] = [];
-    for (let j = 0; j < config.game.col; j++) {
+    for (let j = 0; j < gameCol; j++) {
       map[i][j] = 0;
     }
   }
+  // 单元测试的方式来验证
+  // console.log(map);
 }
 
-export function addToMap(box, map) {
-  const shape = box.shape;
-
-  for (let i = 0; i < shape.length; i++) {
-    for (let j = 0; j < shape[i].length; j++) {
-      // 如果当前的这个位置已经被占用了，那么后来的就不可以被赋值
-      if (checkLegalPointInMap({ x: j + box.x, y: i + box.y })) {
-        if (shape[i][j]) {
-          map[i + box.y][j + box.x] = -1;
-        }
-      }
-    }
-  }
-}
-
-export function addOneLineToMap(map) {
-  // 需要把所有为 -1 的值都往上移动一个位置
-  // 1. 可以筛选出所有包含 -1 的 line 的 索引
-  //    - 找到最新的那个 line 的索引
-  // 2. 删除这个 line ，这样的话，后面的 line 会补位过来
-  // 3. 创建一个都是 -1 的line 添加都 map 的最后面
-  // 4. 用 -2 来标记，这个是不可以消除的
-
-  const row = map.length;
-  const col = map[0].length;
-  const getMinLine = () => {
-    let r = 0;
-    for (let i = 0; i < row; i++) {
-      for (let j = 0; j < col; j++) {
-        if (map[i][j] === -1) {
-          // 获取当前在 line 的行的上一个 line
-          return i - 1;
-        }
-      }
-    }
-
-    return r;
-  };
-
-  const minLine = getMinLine();
-  if (minLine !== -1) {
-    map.splice(minLine, 1);
-    // -2 标记这行是不可以消除的
-    map.push(Array(col).fill(-2));
-  }
-}
-
-/**
- * 检测 point 是否可以再 map 中渲染
- * @param {} box
- * @returns boolean
- */
-export function checkLegalPointInMap(point) {
-  const mapRow = config.game.row;
-  const mapCol = config.game.col;
-
-  const checkCol = point.x < 0 || point.x >= mapCol;
-  const checkRow = point.y < 0 || point.y >= mapRow;
-  return !checkCol && !checkRow;
-}
-
-export function checkLegalBoxInMap(box, map) {
-  const shape = box.shape;
-  const row = shape.length;
-  const col = shape[0].length;
+export function addBoxToMap(box, map) {
+  // box points -> change map value
+  const row = box.shape.length;
+  const col = box.shape[0].length;
 
   for (let i = 0; i < row; i++) {
     for (let j = 0; j < col; j++) {
-      const xx = box.x + j;
-      const yy = box.y + i;
+      const mRow = box.y + i;
+      const mCol = box.x + j;
 
-      if (!checkLegalPointInMap({ x: xx, y: yy })) return true;
-      if (isHardPoint({ row: yy, col: xx, map })) return true;
+      if (mRow < 0 || mCol >= gameCol) continue;
+      // 必须是空的时候才可以添加
+      if (!box.shape[i][j]) continue;
+
+      if (map[mRow][mCol] >= 0) {
+        map[mRow][mCol] = -1;
+      }
     }
   }
-
-  return false;
-}
-
-/**
- * 是不是硬点
- * 硬点指的是 type 为小于 0 的点
- * @param {} x
- * @param {*} y
- */
-export function isHardPoint({ row, col, map }) {
-  return map[row][col] < 0;
 }

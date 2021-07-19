@@ -1,153 +1,75 @@
-import { rotate, rotate270 } from "./matrix";
+import { rotate } from "./matrix";
 export class Box {
-  constructor(options = {}) {
-    this._x = options.x || 0;
-    this._y = options.y || 0;
-    this._type = options.type || "";
-    this._shape = options.shape || [
-      [2, 0, 0],
-      [2, 2, 0],
-      [0, 2, 0],
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    // this.shape = [
+    //   [1, 1],
+    //   [1, 1],
+    // ];
+    this.shape = [
+      [1, 0, 0],
+      [1, 1, 0],
+      [0, 1, 0],
     ];
-    this._rotateIndex = 0;
-    this._rotateStrategy = [];
+
+    this._rotateStrategys = [];
+  }
+  rotateStrategys(strategy) {
+    if (!strategy) return;
+    this._rotateStrategys = strategy;
   }
 
-  setRotateStrategy(strategy) {
-    if (strategy) {
-      this._rotateStrategy = strategy;
+  _rotateIndex = 0;
+  rotate() {
+    const rotate = this._rotateStrategys[this._rotateIndex];
+    if(!rotate) return
+
+
+    this.shape = rotate(this.shape);
+
+    this._rotateIndex++;
+    if (this._rotateIndex >= this._rotateStrategys.length) {
+      this._rotateIndex = 0;
     }
   }
-
-  rotate() {
-    const rotateFn = this._rotateStrategy[this._rotateIndex];
-    this.shape = rotateFn(this.shape);
-    this._rotateIndex = this.nextRotateIndex();
-  }
-
-  nextRotateIndex() {
-    let index = this._rotateIndex;
-
-    index++;
-    if (index >= this._rotateStrategy.length) index = 0;
-
-    return index;
-  }
-
-  peerNextRotateShape() {
-    const rotateFn = this._rotateStrategy[this.nextRotateIndex()];
-    return rotateFn(this.shape);
-  }
-
-  get x() {
-    return this._x;
-  }
-
-  set x(val) {
-    this._x = val;
-  }
-
-  get y() {
-    return this._y;
-  }
-
-  set y(val) {
-    this._y = val;
-  }
-
-  get type() {
-    return this._type;
-  }
-
-  get shape() {
-    return this._shape;
-  }
-
-  set shape(val) {
-    this._shape = val;
-  }
 }
 
-export function createBox({ x, y, shape, type } = {}) {
-  return new Box({ x, y, shape, type });
-}
-
-export function randomCreateBox() {
-  const { shape, rotateStrategy, type } = randomGenerateShape();
-
-  const box = createBox({ shape, type, y: -1 });
-  box.setRotateStrategy(rotateStrategy);
-
-  return box;
-}
-
-const boxsInfo = {
-  0: {
-    type: 0,
-    shape: [
-      [1, 1],
-      [1, 1],
-    ],
-  },
-
+const boxInfos = {
   1: {
-    type: 1,
     shape: [
-      [0, 1, 1],
+      [1, 0, 0],
       [1, 1, 0],
-      [0, 0, 0],
+      [0, 1, 0],
     ],
-    rotateStrategy: [rotate, rotate270],
+    // 90 -> 270
+    rotateStrategy: [rotate, (v) => rotate(rotate(rotate(v)))],
   },
-
   2: {
-    type: 2,
     shape: [
-      [5, 5, 5],
-      [0, 5, 0],
-      [0, 0, 0],
+      [1, 1],
+      [1, 1],
     ],
-    rotateStrategy: [rotate, rotate, rotate, rotate],
-  },
-
-  3: {
-    type: 3,
-    shape: [
-      [0, 7, 0, 0],
-      [0, 7, 0, 0],
-      [0, 7, 0, 0],
-      [0, 7, 0, 0],
-    ],
-    rotateStrategy: [rotate, rotate270],
-  },
-  4: {
-    type: 4,
-    shape: [
-      [4, 0, 0],
-      [4, 0, 0],
-      [4, 4, 0],
-    ],
-    rotateStrategy: [rotate, rotate, rotate, rotate],
-  },
-
-  5: {
-    type: 5,
-    shape: [
-      [0, 0, 6],
-      [0, 0, 6],
-      [0, 6, 6],
-    ],
-    rotateStrategy: [rotate, rotate, rotate, rotate],
   },
 };
 
-function randomGenerateShape() {
-  const len = Object.keys(boxsInfo).length - 1;
-  const index = Math.ceil(Math.random() * len);
+// 利用继承的方式来处理
+// shape 是不一样的
 
-  return boxsInfo[index];
-}
+// 组合的方式来处理
 
-export function getBoxsInfoByKey(key) {
-  return boxsInfo[key];
+// 随机创建box
+export function createBox() {
+  // 获取索引值
+  const len = Object.keys(boxInfos).length;
+  const key = Math.floor(Math.random() * len) + 1;
+
+  const boxInfo = boxInfos[key];
+
+  const box = new Box();
+  box.y = -1;
+  box.rotateStrategys(boxInfo.rotateStrategy);
+  box.shape = boxInfo.shape;
+
+  return box;
 }
