@@ -3,6 +3,7 @@ export class Box {
   constructor() {
     this.x = 0;
     this.y = 0;
+    this.type = null;
     // this.shape = [
     //   [1, 1],
     //   [1, 1],
@@ -23,8 +24,7 @@ export class Box {
   _rotateIndex = 0;
   rotate() {
     const rotate = this._rotateStrategys[this._rotateIndex];
-    if(!rotate) return
-
+    if (!rotate) return;
 
     this.shape = rotate(this.shape);
 
@@ -37,6 +37,7 @@ export class Box {
 
 const boxInfos = {
   1: {
+    type: 1,
     shape: [
       [1, 0, 0],
       [1, 1, 0],
@@ -46,6 +47,7 @@ const boxInfos = {
     rotateStrategy: [rotate, (v) => rotate(rotate(rotate(v)))],
   },
   2: {
+    type: 2,
     shape: [
       [1, 1],
       [1, 1],
@@ -69,6 +71,22 @@ export function createBox() {
   const box = new Box();
   box.y = -1;
   box.rotateStrategys(boxInfo.rotateStrategy);
+  box.type = boxInfo.type;
+  box.shape = boxInfo.shape;
+
+  return box;
+}
+
+export function createBoxByType(type) {
+  // 获取索引值
+  if(!type) return
+
+  const boxInfo = boxInfos[type];
+
+  const box = new Box();
+  box.y = -1;
+  box.rotateStrategys(boxInfo.rotateStrategy);
+  box.type = boxInfo.type;
   box.shape = boxInfo.shape;
 
   return box;

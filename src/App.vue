@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <Game></Game>
+  <div style="display: flex">
+    <Game type="self"></Game>
+    <Game type="rival"></Game>
     <button @click="handleStartGame">startGame</button>
   </div>
 </template>
@@ -11,7 +12,7 @@ import { startGame } from "./game";
 
 function handleStartGame() {
   console.log("开始游戏");
-  startGame()
+  startGame();
 }
 </script>
 

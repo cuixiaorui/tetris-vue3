@@ -5,6 +5,7 @@ export function render(box, map) {
 }
 
 function _render(box, map) {
+  if(!box) return
   const shape = box.shape;
   for (let i = 0; i < shape.length; i++) {
     for (let j = 0; j < shape[0].length; j++) {

@@ -26,19 +26,24 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("addLine", num);
   });
   socket.on("moveBoxToDown", (info) => {
-    socket.broadcast.emit("moveBoxToDown", info);
+    // socket.broadcast.emit("moveBoxToDown", info);
+    io.emit("moveBoxToDown", info);
   });
   socket.on("moveBoxToLeft", (info) => {
-    socket.broadcast.emit("moveBoxToLeft", info);
+    // socket.broadcast.emit("moveBoxToLeft", info);
+    io.emit("moveBoxToLeft", info);
   });
   socket.on("moveBoxToRight", (info) => {
-    socket.broadcast.emit("moveBoxToRight", info);
+    // socket.broadcast.emit("moveBoxToRight", info);
+    io.emit("moveBoxToRight", info);
   });
   socket.on("rotateBox", (info) => {
-    socket.broadcast.emit("rotateBox", info);
+    // socket.broadcast.emit("rotateBox", info);
+    io.emit("rotateBox", info);
   });
   socket.on("createBox", (info) => {
-    socket.broadcast.emit("createBox", info);
+    // socket.broadcast.emit("createBox", info);
+    io.emit("createBox", info);
   });
 });
 
