@@ -2,6 +2,8 @@
 
 使用 vue3 实现俄罗斯方块
 
+[单机版本实现](https://github.com/cuixiaorui/tetris-vue3/tree/stand-alone)
+
 ## 实现原理
 
 采用了 [Functional Core, Imperative Shell](https://marsbased.com/blog/2020/01/20/functional-core-imperative-shell/#:~:text=The%20pattern.%20This%20pattern%20is%20sometimes%20called%20functional,commands.%20We%20keep%20that%20code%20small%20and%20trivial.) 模式来实现
@@ -11,6 +13,8 @@
 业务核心逻辑和视图逻辑拆分
 
 可以移植到任意 UI 库
+
+
 
 ## todo
 
