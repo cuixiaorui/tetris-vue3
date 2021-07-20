@@ -3,6 +3,7 @@
 使用 vue3 实现俄罗斯方块
 
 [单机版本实现](https://github.com/cuixiaorui/tetris-vue3/tree/stand-alone)
+[联机版本实现](https://github.com/cuixiaorui/tetris-vue3/tree/online)
 
 ## 实现原理
 
